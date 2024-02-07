@@ -36,7 +36,6 @@ const query = new URLSearchParams({
 });
 
 const authorizeUri = authorizationEndpoint + "?" + query.toString();
-console.log(authorizeUri);
 
 type TokenResponse = {
   access_token: string;
@@ -100,3 +99,26 @@ const tokenResponse = await tokenResponsePromise;
 
 // Use the token however you want, console.log and copy to Bruno/Postman/whatever, or just make requests with fetch in this file.
 console.log(tokenResponse);
+
+// Example of how to call an API using the token we just acquired:
+
+// fetch(
+//   "https://developer.api.autodesk.com/forma/terrain/61a7e758-27f8-4a94-bdfa-ad308e5428b8/revisions/1706175717609?authcontext=pro_0fovoakrca",
+//   {
+//     method: "GET",
+//     headers: {
+//       accept: "application/json",
+//       authorization: `Bearer ${tokenResponse.access_token}`,
+//       "x-ads-region": "EMEA",
+//     },
+//   },
+// )
+//   .then((res) => {
+//     if (!res.ok) {
+//       console.error(res.status, res.statusText);
+//     }
+//     return res.json();
+//   })
+//   .then((body) => {
+//     console.log(body);
+//   });
