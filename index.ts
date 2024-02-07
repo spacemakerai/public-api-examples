@@ -37,50 +37,65 @@ const query = new URLSearchParams({
 
 const authorizeUri = authorizationEndpoint + "?" + query.toString();
 
-Bun.serve({
-  port: REDIRECT_URI.port,
-  fetch(req) {
-    const url = new URL(req.url);
-    if (url.pathname === REDIRECT_URI.pathname) {
-      const code = url.searchParams.get("code");
-      if (!code) {
-        return new Response("/oauth/callback called with no code", {
-          status: 500,
+type TokenResponse = {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  token_type: string;
+};
+
+const tokenResponsePromise = new Promise<TokenResponse>((res, rej) => {
+  Bun.serve({
+    port: REDIRECT_URI.port,
+    fetch(req, server) {
+      const url = new URL(req.url);
+      if (url.pathname === REDIRECT_URI.pathname) {
+        const code = url.searchParams.get("code");
+        if (!code) {
+          return new Response("/oauth/callback called with no code", {
+            status: 500,
+          });
+        }
+        console.log(code);
+        const body = new URLSearchParams({
+          grant_type: "authorization_code",
+          client_id: CLIENT_ID,
+          code_verifier: code_verifier,
+          code: code,
+          redirect_uri: REDIRECT_URI.toString(),
+        });
+        fetch("https://developer.api.autodesk.com/authentication/v2/token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            accept: "application/json",
+          },
+          body: body.toString(),
+        })
+          .then((res) => {
+            if (!res.ok) {
+              console.error(
+                `authorization code exchange failed: ${res.status} ${res.statusText}`,
+              );
+            }
+            return res.json();
+          })
+          .then((body) => {
+            server.stop();
+            res(body);
+          });
+        return new Response("Success, you can close this tab now!", {
+          status: 200,
         });
       }
-      console.log(code);
-      const body = new URLSearchParams({
-        grant_type: "authorization_code",
-        client_id: CLIENT_ID,
-        code_verifier: code_verifier,
-        code: code,
-        redirect_uri: REDIRECT_URI.toString(),
-      });
-      fetch("https://developer.api.autodesk.com/authentication/v2/token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          accept: "application/json",
-        },
-        body: body.toString(),
-      })
-        .then((res) => {
-          if (!res.ok) {
-            console.error(
-              `authorization code exchange failed: ${res.status} ${res.statusText}`,
-            );
-          }
-          return res.json();
-        })
-        .then((body) => {
-          console.log(body);
-        });
-      return new Response("Success, you can close this tab now!", {
-        status: 200,
-      });
-    }
-    return new Response("Not Found", { status: 404 });
-  },
+      return new Response("Not Found", { status: 404 });
+    },
+  });
 });
 
 open(authorizeUri);
+
+const tokenResponse = await tokenResponsePromise;
+
+// Use the token however you want, console.log and copy to Bruno/Postman/whatever, or just make requests with fetch in this file.
+console.log(tokenResponse);
