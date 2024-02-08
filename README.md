@@ -13,6 +13,7 @@ bun install
 # Get an access token
 
 Create an app in APS (<https://aps.autodesk.com/myapps/>) and update the consts at the top of `index.ts` with the values from the it.
+For convenience, `CLIENT_ID` can be set in a `.env` file. 
 
 ```bash
 bun run index.ts

@@ -2,7 +2,9 @@ import { webcrypto } from "crypto";
 import open from "open";
 
 // Change these depending on the client you've created in APS.
-const CLIENT_ID = "yjqqzrpDB67C2eaGBLpfXyDnXyRMHgP6";
+
+const CLIENT_ID = Bun.env.CLIENT_ID
+
 const REDIRECT_URI = new URL("http://localhost:8080/oauth/callback/");
 const EDITOR_SCOPES = ["data:read", "data:write"];
 const VIEWER_SCOPES = ["data:read"];
