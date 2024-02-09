@@ -3,7 +3,7 @@ import open from "open";
 
 // Change these depending on the client you've created in APS.
 
-const CLIENT_ID = Bun.env.CLIENT_ID
+const CLIENT_ID = Bun.env.CLIENT_ID || "YOUR_CLIENT_ID_HERE";
 
 const REDIRECT_URI = new URL("http://localhost:8080/oauth/callback/");
 const EDITOR_SCOPES = ["data:read", "data:write"];
@@ -118,6 +118,7 @@ console.log(tokenResponse);
 //   .then((res) => {
 //     if (!res.ok) {
 //       console.error(res.status, res.statusText);
+//       thow new Error("Error calling API")
 //     }
 //     return res.json();
 //   })

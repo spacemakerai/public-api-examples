@@ -4,7 +4,9 @@ Examples and utils for testing public Forma HTTP APIs.
 
 To install dependencies:
 
-Install bun (<https://bun.sh/>)
+Install bun (<https://bun.sh/docs/installation>).
+
+Then, in this repo:
 
 ```bash
 bun install
@@ -35,7 +37,7 @@ fetch(
     headers: {
       accept: "application/json",
       authorization: `Bearer ${tokenResponse.access_token}`,
-      "x-ads-region": "EMEA",
+      "x-ads-region": "EMEA", // US for US region.
     },
   },
 )
