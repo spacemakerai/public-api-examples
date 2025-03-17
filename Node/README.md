@@ -18,8 +18,8 @@ Create an app in APS (<https://aps.autodesk.com/myapps/>). The code in `index.ts
 implements the Authorization Code Grant (PKCE) for public clients flow described
 [here](https://aps.autodesk.com/en/docs/oauth/v2/tutorials/get-3-legged-token-pkce/get-3-legged-token-pkce/)
 . Make sure you choose "Desktop, Mobile, Single-Page App" for the application
-type. Update the const at the top of `index.ts` with the values from the it or
-set `CLIENT_ID` in a `.env` file.
+type. Update the const at the top of `index.ts` with the values from the
+application you created or set `CLIENT_ID` in a `.env` file.
 
 ```bash
 bun run index.ts
